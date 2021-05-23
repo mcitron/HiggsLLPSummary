@@ -111,8 +111,8 @@ def plotHiggsLimits(decay="bb",masses=[15,40,55], samples=["zh","dj","csc"]):
     dx = (1-left-right-0.1)/len(samples) # size of legends in x 
     x = [left+0.05+s*dx for s in range(0,len(samples))]
     #x = [0.27, 0.49, 0.72] # automate this
-    y = 0.72
-    dy=0.01+(0.01+legtxt)*len(masses)
+    y = 0.3
+    dy=0.005+(0.01+legtxt)*len(masses)
     
     # get graphs and labels 
     graphs = []
@@ -156,32 +156,32 @@ def plotHiggsLimits(decay="bb",masses=[15,40,55], samples=["zh","dj","csc"]):
     latex2.SetTextFont(font);#same as leg
     for i,sample in enumerate(samples):
         legends[i].Draw()
-        latex1.DrawLatex(x[i]+dx/2.,y+0.07,pretty_sample(sample))
-        latex2.DrawLatex(x[i]+dx/2.,y+0.03,arxiv(sample))
+        latex1.DrawLatex(x[i]+dx/2.,y+0.06,pretty_sample(sample))
+        latex2.DrawLatex(x[i]+dx/2.,y+0.02,arxiv(sample))
 
     # Decay mode top right
+    x,y=0.73,0.55
     latex = ROOT.TLatex() 
     latex.SetNDC(1)
     latex.SetTextSize(0.05);
     latex.SetTextAlign(12);
     latex.SetTextFont(font);#same as leg
     decay_txt = "4b" if decay=="bb" else "4d"
-    latex.DrawLatex(0.7,1-top-0.05,"h#rightarrowss#rightarrow{}".format(decay_txt))
+    latex.DrawLatex(x,y,"h#rightarrowss#rightarrow{}".format(decay_txt))
+    #latex.DrawLatex(0.7,1-top-0.05,"h#rightarrowss#rightarrow{}".format(decay_txt))
+
+    # Date below decay mode
+    drawDate(x+0.01,y-0.06)
 
     # CMS label top left
-    x,y=left+0.04,1-top-0.05
+    x,y=left+0.01,1-top+0.04
     drawCMS(x,y)
 
-    # Date
-    x=left+0.02
-    y=1-top+0.03
-    drawDate(x,y)
-
     # Luminosity & Energy
-    drawLumi(0.55,y)
+    drawLumi(0.56,y)
 
     # lines
-    minx,maxx,miny,maxy=5e-1,1.5e7,3e-4,4e3
+    minx,maxx,miny,maxy=5e-1,1.5e7,2e-5,1e0
     y_lines = [1,1e-1,1e-2,1e-3]
     for y_line in y_lines: 
         lin = ROOT.TLine(minx,y_line,maxx,y_line) # BR=1
@@ -195,7 +195,7 @@ def plotHiggsLimits(decay="bb",masses=[15,40,55], samples=["zh","dj","csc"]):
     gr_unphys.SetFillColor(ROOT.kGray);
     gr_unphys.SetLineWidth(300);
     gr_unphys.SetFillStyle(3553);
-    gr_unphys.Draw("same")
+    #gr_unphys.Draw("same")
 
     latex = ROOT.TLatex() 
     latex.SetNDC(1)
@@ -204,8 +204,7 @@ def plotHiggsLimits(decay="bb",masses=[15,40,55], samples=["zh","dj","csc"]):
     latex.SetTextColor(ROOT.kGray);
     latex.SetTextAlign(12);
     latex.SetTextFont(font);#same as leg
-    #latex.DrawLatex(0.76,0.535,"BR=1, Physical Boundary")
-    latex.DrawLatex(0.76,0.54,"#it{B}=1, Physical Boundary")
+    #latex.DrawLatex(0.76,0.54,"#it{B}=1, Physical Boundary")
 
     c.SetLogy(1)
     c.SetLogx(1)
@@ -216,8 +215,8 @@ def plotHiggsLimits(decay="bb",masses=[15,40,55], samples=["zh","dj","csc"]):
     mgraph.GetHistogram().GetXaxis().SetTitleOffset(1.3)
     c.Update()
 
-    c.Print("h{}.pdf".format(decay_txt))
-    c.Print("h{}.png".format(decay_txt))
+    c.Print("h{}_bottom.pdf".format(decay_txt))
+    c.Print("h{}_bottom.png".format(decay_txt))
 
 
 plotHiggsLimits("bb")

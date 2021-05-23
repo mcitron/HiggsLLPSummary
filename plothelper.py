@@ -13,6 +13,47 @@ colors.append(2001)#
 colors.append(2002)#
 colors.append(2003)#
 
+# For plotting
+date = "May 2021"
+lumi = "117-137 fb^{-1} (13 TeV)" 
+# csc = 137
+# dj  = 132
+# zh  = 117
+
+def drawCMS(x,y,dx=0.1,size=0.05):
+    latex = ROOT.TLatex() 
+    latex.SetNDC(1)
+    latex.SetTextSize(size);
+    latex.SetTextAlign(12);
+    latex.SetTextFont(62);#bold
+    latex.DrawLatex(x,y,"CMS")
+
+    latex = ROOT.TLatex() 
+    latex.SetNDC(1)
+    latex.SetTextSize(size);
+    latex.SetTextAlign(12);
+    latex.SetTextFont(52);#italic
+    latex.DrawLatex(x+dx,y-0.005,"Preliminary")
+
+    return
+
+def drawDate(x,y,size=0.05,font=42):
+    latex = ROOT.TLatex() 
+    latex.SetNDC(1)
+    latex.SetTextSize(size);
+    latex.SetTextAlign(12);
+    latex.SetTextFont(font);#same as leg
+    latex.DrawLatex(x,y,date)
+    return
+
+def drawLumi(x,y,size=0.05,font=42):
+    latex = ROOT.TLatex() 
+    latex.SetNDC(1)
+    latex.SetTextSize(size);
+    latex.SetTextAlign(12);
+    latex.SetTextFont(font);#same as leg
+    latex.DrawLatex(x,y,lumi)
+    return
 
 def setStyle():
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
