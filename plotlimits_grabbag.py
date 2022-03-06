@@ -3,9 +3,12 @@ from plothelper import *
 setStyle()
 
        
-def decayMode(sample):
+def decayMode(sample,mass):
     if "csc"  in sample: return "X#rightarrow#tau#tau"
-    elif "sc" in sample: return "X#rightarrowll"  
+    elif "sc" in sample and mass==40: return "#it{B}(X#rightarrow#mu#mu)=0.13"  
+    elif "sc" in sample and mass==2 : return "#it{B}(X#rightarrow#mu#mu)=0.24"  
+    elif "dm" in sample and mass==20 : return "#it{B}(X#rightarrow#mu#mu)=0.14" 
+    elif "dm" in sample and mass==40 : return "#it{B}(X#rightarrow#mu#mu)=0.13"
     elif "dl" in sample: return "X#rightarrowee/#mu#mu"
     elif "dj" in sample: return "X#rightarrowdd"
     elif "zh" in sample: return "X#rightarrowbb"
@@ -13,18 +16,18 @@ def decayMode(sample):
 
 def plotHiggsLimits(opt="low"):
     # specify samples, and which mass/decay corresponding to sample i
-    samples = ["sc","dl","zh","dj","csc"]
-    decays  = ["mm","ll","bb","dd","tt" ]
+    samples = ["dl","sc","dm","zh","dj","csc"]
+    decays  = ["ll","mm","mm","bb","dd","tt" ]
     if opt=="high":
-        masses  = [40,50,55,55,55 ]
-    else :
-        masses  = [2 ,30,15,15,7 ]
+        masses  = [50,40,40,55,55,55 ]
+    else :               
+        masses  = [30,2 ,20,15,15,7 ]
 
     # setup plotting
-    c = ROOT.TCanvas("c","",1200,900)
+    c = ROOT.TCanvas("c","",1300,900)
     
     # margins 
-    left,right,top,bottom=0.15,0.25,0.08,0.15
+    left,right,top,bottom=0.15,0.28,0.08,0.15
     c.SetLeftMargin(left)
     c.SetRightMargin(right)
     c.SetTopMargin(top)
@@ -56,7 +59,7 @@ def plotHiggsLimits(opt="low"):
     dy_misc = dy_leg*0.6 # misc padding btw leg and decay mode
     dy_decay  = dy_leg*1.0 #dy between decay mode and arxiv 
     dy_arxiv = dy_leg*1.0 #dy between arxiv and title(legend) 
-    y_start = 1-top-1.5*dy_leg # start of first title in y
+    y_start = 1-top #-0.1*dy_leg # start of first title in y
     
     # get graphs and legends 
     graphs = []
@@ -91,7 +94,7 @@ def plotHiggsLimits(opt="low"):
         legends[k].Draw()
         y = y-dy_leg
         y-=dy_misc
-        latex2.DrawLatex(x+dx1,y,decayMode(sample)+", m_{X}=%i GeV"%masses[i])
+        latex2.DrawLatex(x+dx1,y,decayMode(sample,masses[i])+", m_{X}=%i GeV"%masses[i])
         y-=dy_decay
         latex2.DrawLatex(x+dx1,y,arxiv(sample))
         y-=dy_arxiv
@@ -122,7 +125,7 @@ def plotHiggsLimits(opt="low"):
     drawCMS(x,y,dx=0.08)
 
     # Date
-    x=0.62 #left+0.02
+    x=0.55 #left+0.02
     y=1-top+0.03
     drawDate(x,y)
 
@@ -164,9 +167,9 @@ def plotHiggsLimits(opt="low"):
     c.Update()
 
 
-    c.Print("plots/h_mixed_{}.pdf".format(opt))
-    c.Print("plots/h_mixed_{}.png".format(opt))
+    c.Print("plots/higgs_llps_all_m{}_{}.pdf".format(opt,datestr))
+    c.Print("plots/higgs_llps_all_m{}_{}.png".format(opt,datestr))
 
 
-plotHiggsLimits("low")
 plotHiggsLimits("high")
+plotHiggsLimits("low")

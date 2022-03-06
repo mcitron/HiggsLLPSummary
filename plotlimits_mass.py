@@ -115,7 +115,7 @@ def plotHiggsLimits(mass=15, decays=["dd","bb","tt"], samples=["zh","dj","csc"])
     drawCMS(x,y,dx=0.08)
 
     # Date
-    x=0.62 #left+0.02
+    x=0.58 #left+0.02
     y=1-top+0.03
     drawDate(x,y)
 
@@ -157,8 +157,8 @@ def plotHiggsLimits(mass=15, decays=["dd","bb","tt"], samples=["zh","dj","csc"])
     c.Update()
 
 
-    c.Print("plots/hHad_mass{}.pdf".format(mass))
-    c.Print("plots/hHad_mass{}.png".format(mass))
+    c.Print("plots/higgs_llps_had_mass{}_{}.pdf".format(mass,datestr))
+    c.Print("plots/higgs_llps_had_mass{}_{}.png".format(mass,datestr))
 
 
 plotHiggsLimits(15)
