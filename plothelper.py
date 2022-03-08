@@ -204,7 +204,7 @@ def pretty_sample(sample):
     if sample=="csc": return "Hadronic MS"
     if sample=="dl" : return "Displaced leptons"
     if sample=="sc" : return "Dimuon scouting"
-    if sample=="dm" : return "Dimuon DV"
+    if sample=="dm" : return "Displaced dimuon"
     return 
 
 def arxiv(sample):
