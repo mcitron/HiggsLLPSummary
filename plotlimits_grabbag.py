@@ -4,9 +4,15 @@ setStyle()
 
        
 def decayMode(sample,mass):
-    if "csc"  in sample: return "X#rightarrow#tau#tau"
+    if sample is "csc": return "X#rightarrow#tau#tau"
+    elif "csctt" in sample: return "X#rightarrow#tau#tau"
+    elif "cscpp" in sample: return "X#rightarrow #pi^{0}#pi^{0}"
+    elif "csckk" in sample: return "X#rightarrow #kappa^{0}#kappa^{0}"
+    elif "cscgg" in sample: return "X#rightarrow#gamma#gamma"
+    elif "cscee" in sample: return "X#rightarrow ee"
     elif "sc" in sample and mass==40: return "#it{B}(X#rightarrow#mu#mu)=0.13"  
     elif "sc" in sample and mass==2 : return "#it{B}(X#rightarrow#mu#mu)=0.24"  
+    elif "sc" in sample and mass==5 : return "#it{B}(X#rightarrow#mu#mu)=0.16"  
     elif "dm" in sample and mass==20 : return "#it{B}(X#rightarrow#mu#mu)=0.14" 
     elif "dm" in sample and mass==40 : return "#it{B}(X#rightarrow#mu#mu)=0.13"
     elif "dl" in sample: return "X#rightarrowee/#mu#mu"
@@ -20,8 +26,12 @@ def plotHiggsLimits(opt="low"):
     decays  = ["ll","mm","mm","bb","dd","tt" ]
     if opt=="high":
         masses  = [50,40,40,55,55,55 ]
-    else :               
-        masses  = [30,2 ,20,15,15,7 ]
+    elif opt=="low" :               
+        masses  = [30,5 ,20,15,15,7 ]
+    elif opt=="vlow" :               
+        samples = ["sc","csctt","csckk","cscgg"]
+        decays = ["mm","tt","kk","gg"]
+        masses  = [2,7,1.5,0.4]
 
     # setup plotting
     c = ROOT.TCanvas("c","",1300,900)
@@ -67,14 +77,20 @@ def plotHiggsLimits(opt="low"):
     legends = []
     y=y_start
     for i,sample in enumerate(samples): 
-        graph=getGraph(sample,masses[i],decays[i]) 
+        if "csc" in sample:
+            sampleForGraph = "csc"
+        else:
+            sampleForGraph = sample
+        graph=getGraph(sampleForGraph,masses[i],decays[i]) 
         if graph==-1:  continue
         graph.SetLineStyle(1)
+        if "csckk" in sample:graph.SetLineStyle(2)
+        elif "cscgg" in sample:graph.SetLineStyle(8)
         mgraph.Add(graph)
         leg = ROOT.TLegend(x,y-dy_leg,x+dx,y)
         leg.SetBorderSize(0)
         leg.SetTextSize(legtxt+0.005)
-        leg.AddEntry(graph,pretty_sample(sample),"l") 
+        leg.AddEntry(graph,pretty_sample(sampleForGraph),"l") 
         legends.append(leg)
         y-=dy_leg # update y
         y-=dy_misc
@@ -85,6 +101,7 @@ def plotHiggsLimits(opt="low"):
 
     mgraph.Draw("AL")
     mgraph.SetTitle(";c#tau_{X} [mm];95% CL upper limit on #it{B}(h#rightarrowXX)")
+    print(len(legends))
 
     # draw legends and title/arxiv text
     k = 0    
@@ -94,11 +111,18 @@ def plotHiggsLimits(opt="low"):
         legends[k].Draw()
         y = y-dy_leg
         y-=dy_misc
-        latex2.DrawLatex(x+dx1,y,decayMode(sample,masses[i])+", m_{X}=%i GeV"%masses[i])
+        if masses[i] - int(masses[i]) >= 0.1:
+            latex2.DrawLatex(x+dx1,y,decayMode(sample,masses[i])+", m_{X}=%.1f GeV"%masses[i])
+        else:
+            latex2.DrawLatex(x+dx1,y,decayMode(sample,masses[i])+", m_{X}=%i GeV"%masses[i])
         y-=dy_decay
-        latex2.DrawLatex(x+dx1,y,arxiv(sample))
+        if "csc" in sample:
+            sampleForGraph = "csc"
+        else:
+            sampleForGraph = sample
+        latex2.DrawLatex(x+dx1,y,arxiv(sampleForGraph))
         y-=dy_arxiv
-        graph=getGraph(sample,masses[i],decays[i]) 
+        graph=getGraph(sampleForGraph,masses[i],decays[i]) 
         if graph==-1:continue
         #legends[k].Draw()
         #latex2.DrawLatex(x+dx/2.+dx1,y,"m_{S}=%i GeV"%masses[i])
@@ -173,3 +197,4 @@ def plotHiggsLimits(opt="low"):
 
 plotHiggsLimits("high")
 plotHiggsLimits("low")
+plotHiggsLimits("vlow")

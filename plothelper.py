@@ -15,8 +15,8 @@ colors.append(2002)#
 colors.append(2003)#
 
 # For plotting
-date    = "March 2022"
-datestr = "March_2022"
+date    = "August 2023"
+datestr = "August_2023"
 
 # Input files here
 # get files
@@ -24,7 +24,7 @@ f_zh_4b  = ROOT.TFile.Open("input/exo_20_003_4b_obs_exp.root")
 f_zh_4d  = ROOT.TFile.Open("input/exo_20_003_4d_obs_exp.root")
 f_dj_4b  = ROOT.TFile.Open("input/ggHbbbb_limits.root")
 f_dj_4d  = ROOT.TFile.Open("input/ggHdddd_limits.root")
-f_csc    = ROOT.TFile.Open("input/limits_exo_20_015.root")
+f_csc    = ROOT.TFile.Open("input/limits_exo_21_008.root")
 f_dl     = ROOT.TFile.Open("input/limit_plot_BR_mm.root")
 f_sc     = ROOT.TFile.Open("input/upperlimit_br_H4_vsctau.root")
 f_dm_20     = ROOT.TFile.Open("input/EXO-21-006_obs_20.root")
@@ -146,6 +146,7 @@ def convert_m_to_mm(graph):
 
 def cosmetic(graph):
     name = graph.GetName()
+    print(name)
     if "zh"  in name:graph.SetLineColor(ROOT.kRed-4) 
     elif "csc" in name:graph.SetLineColor(ROOT.kBlue-4)
     elif "dj"  in name:graph.SetLineColor(ROOT.kTeal+2) 
@@ -169,9 +170,14 @@ def getGraph(sample, mass, decay):
         elif decay == "tt" : gr=-1
         elif decay=="dd" : gr = f_zh_4d.Get("gObs_{}".format(mass))
     elif sample=="csc" : 
-        if decay=="bb"   : gr = convert_m_to_mm( f_csc.Get("h_bbbb_m{}_obs".format(mass))) 
-        elif decay=="dd" : gr = convert_m_to_mm( f_csc.Get("h_dddd_m{}_obs".format(mass))) 
-        elif decay=="tt" : gr = convert_m_to_mm( f_csc.Get("h_4Tau_m{}_obs".format(mass)))
+        massString = str(mass).replace(".","p")
+        if decay=="bb"   : gr = convert_m_to_mm( f_csc.Get("h_SToBB_ms{}_obs".format(massString))) 
+        elif decay=="dd" : gr = convert_m_to_mm( f_csc.Get("h_STodd_ms{}_obs".format(massString))) 
+        elif decay=="tt" : gr = convert_m_to_mm( f_csc.Get("h_SToTauTau_ms{}_obs".format(massString)))
+        elif decay=="pp" : gr = convert_m_to_mm( f_csc.Get("h_SToPi0Pi0_ms{}_obs".format(massString)))
+        elif decay=="kk" : gr = convert_m_to_mm( f_csc.Get("h_SToK0K0_ms{}_obs".format(massString)))
+        elif decay=="gg" : gr = convert_m_to_mm( f_csc.Get("h_SToGammaGamma_ms{}_obs".format(massString)))
+        elif decay=="ee" : gr = convert_m_to_mm( f_csc.Get("h_SToEE_ms{}_obs".format(massString)))
     elif sample=="dj" :
         if mass==15 and decay == "bb" : gr=-1 #shitty hack
         elif decay == "tt" : gr=-1
@@ -201,7 +207,7 @@ def getGraph(sample, mass, decay):
 def pretty_sample(sample):
     if sample=="zh" : return "Z + displaced jets"
     if sample=="dj" : return "Displaced jets"
-    if sample=="csc": return "Hadronic MS"
+    if sample=="csc": return "MS Clusters"
     if sample=="dl" : return "Displaced leptons"
     if sample=="sc" : return "Dimuon scouting"
     if sample=="dm" : return "Displaced dimuon"
@@ -210,7 +216,7 @@ def pretty_sample(sample):
 def arxiv(sample):
     if sample=="zh" : return "2110.13218" #"EXO-20-003"
     if sample=="dj" : return "2012.01581"
-    if sample=="csc": return "2107.04838"
+    if "csc" in sample: return "EXO-21-008"
     if sample=="dl" : return "2110.04809" #"EXO-18-003"
     if sample=="sc" : return "2112.13769" #"EXO-20-014"
     if sample=="dm" : return "EXO-21-006"
